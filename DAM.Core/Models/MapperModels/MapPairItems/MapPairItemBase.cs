@@ -15,5 +15,7 @@ namespace DAM.Core.Models.MapperModels.MapPairItems
             Id = Guid.NewGuid().ToString();
             IsReverse = false;
         }
+
+        public abstract string GetMapExpression();
     }
 }
