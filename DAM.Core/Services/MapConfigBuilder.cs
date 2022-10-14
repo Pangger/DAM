@@ -50,33 +50,12 @@ namespace DAM.Core.Services
                     isReverseMapPlaced = true;
                 }
                 mapConfig.Append(Environment.NewLine);
-                mapConfig.Append(GetMapPairItem(mapItem));
+                mapConfig.Append(mapItem.GetMapExpression());
             }
 
             mapConfig.Append(";");
 
             return mapConfig.ToString();
         }
-
-        private string GetMapPairItem(MapPairItemBase mapItem)
-        {
-            if (mapItem is SimpleMapPairItem simpleMapPair)
-                return GetSimpleMapPairItem(simpleMapPair);
-            if (mapItem is IgnoreMapPairItem ignoreMapPair)
-                return GetIgnoreMapPairItem(ignoreMapPair);
-            if (mapItem is OrderedMapPairItem orderedMapPair)
-                return GetOrderedMapPairItem(orderedMapPair);
-
-            return string.Empty;
-        }
-
-        private string GetSimpleMapPairItem(SimpleMapPairItem mapItem)
-            => $".ForMember(dest => dest.{mapItem.DestinationProperty.Name}, opt => opt.MapFrom(src => src.{mapItem.SourceProperty.Name}))";
-
-        private string GetIgnoreMapPairItem(IgnoreMapPairItem mapItem)
-            => $".ForMember(dest => dest.{mapItem.DestinationProperty.Name}, opt => opt.Ignore())";
-
-        private string GetOrderedMapPairItem(OrderedMapPairItem mapItem)
-            => $".ForMember(dest => dest.{mapItem.DestinationProperty.Name}, opt => opt.SetMappingOrder({mapItem.Order}))";
     }
 }
