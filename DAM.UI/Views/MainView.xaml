@@ -1,0 +1,236 @@
+﻿<views:MvxWpfView 
+    xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+    x:Class="DAM.UI.Views.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:behaviours="clr-namespace:DAM.UI.Behaviors"
+    xmlns:solutionModels="clr-namespace:DAM.Core.Models.SolutionModels;assembly=DAM.Core"
+    xmlns:mapperModels="clr-namespace:DAM.Core.Models.MapperModels;assembly=DAM.Core"
+    xmlns:mapPairItemModels="clr-namespace:DAM.Core.Models.MapperModels.MapPairItems;assembly=DAM.Core"
+    xmlns:helpers="clr-namespace:DAM.UI.Helpers"
+    xmlns:converters="clr-namespace:DAM.UI.Converters"
+    xmlns:viewModels="clr-namespace:DAM.ViewModels;assembly=DAM.ViewModels"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800"
+    Name="RootView">
+    <views:MvxWpfView.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <helpers:MapPairItemTemplateSelector x:Key="MapPairItemTemplateSelector"/>
+    </views:MvxWpfView.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <Button Padding="25, 15"
+                    Margin="10"
+                    Content="Load solution"
+                    Command="{Binding LoadSolutionCommand}"/>
+            <Button Padding="25, 15"
+                    Margin="10"
+                    Content="Add Source"
+                    Command="{Binding OpenSourceModelCommand}"
+                    CommandParameter="{Binding SelectedModel}"/>
+            <Button Padding="25, 15"
+                    Margin="10"
+                    Content="Add Destination"
+                    Command="{Binding OpenDestinationModelCommand}"
+                    CommandParameter="{Binding SelectedModel}"/>
+        </StackPanel>
+
+        <TreeView
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.RowSpan="2"
+            ItemsSource="{Binding SolutionItems}">
+            <i:Interaction.Behaviors>
+                <behaviours:BindableSelectedItemBehavior SelectedItem="{Binding SelectedModel, Mode=TwoWay}"></behaviours:BindableSelectedItemBehavior>
+            </i:Interaction.Behaviors>
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type solutionModels:ProjectDirectory}"
+                                          ItemsSource="{Binding Items}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=Name}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <DataTemplate DataType="{x:Type solutionModels:Model}">
+                    <Border Padding="5">
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE898;"
+                                FontSize="12"
+                                Margin="0, 0, 5, 0"
+                                Command="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type TreeView}}, Path=DataContext.OpenSourceModelCommand}"
+                                CommandParameter="{Binding .}"/>
+
+                            <TextBlock Text="{Binding Name}"/>
+
+                            <Button
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE896;"
+                                FontSize="12"
+                                Margin="5, 0, 0, 0"
+                                Command="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type TreeView}}, Path=DataContext.OpenDestinationModelCommand}"
+                                CommandParameter="{Binding .}"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0"
+                        Margin="5, 10"
+                        Orientation="Horizontal"
+                        Visibility="{Binding SourceModel, Converter={StaticResource NullToVisibilityConverter}, Mode=OneWay}">
+                <TextBlock>
+                    <Run Text="Source: "/>
+                    <Run Text="{Binding SourceModel.Name}"/>
+                </TextBlock>
+                <Button FontFamily="Segoe MDL2 Assets"
+                        Content="&#xE74D;"
+                        Margin="10, 0, 0, 0"
+                        Command="{Binding RemoveMapModelCommand}"
+                        CommandParameter="{x:Static viewModels:ModelType.Source}"></Button>
+            </StackPanel>
+            <StackPanel Grid.Row="1"
+                        Margin="5, 10"
+                        Orientation="Horizontal"
+                        Visibility="{Binding DestinationModel, Converter={StaticResource NullToVisibilityConverter}, Mode=OneWay}">
+                <TextBlock>
+                    <Run Text="Destination: "/>
+                    <Run Text="{Binding DestinationModel.Name}"/>
+                </TextBlock>
+                <Button FontFamily="Segoe MDL2 Assets"
+                        Content="&#xE74D;"
+                        Margin="10, 0, 0, 0"
+                        Command="{Binding RemoveMapModelCommand}"
+                        CommandParameter="{x:Static viewModels:ModelType.Destination}"></Button>
+            </StackPanel>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ListView Grid.Column="0"
+                          Padding="10"
+                          HorizontalContentAlignment="Stretch"
+                          ItemsSource="{Binding MapItems}"
+                          ItemTemplateSelector="{StaticResource MapPairItemTemplateSelector}">
+                    <ListView.Style>
+                        <Style TargetType="ListView">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSavedPairsVisible}" Value="False">
+                                    <Setter Property="Grid.ColumnSpan" Value="2"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.Style>
+                </ListView>
+
+                <ListView Grid.Column="1"
+                              Padding="10"
+                              ItemsSource="{Binding MapPairs, Mode=OneWay}"
+                              SelectedItem="{Binding SelectedMapPair, Mode=TwoWay}"
+                              Visibility="{Binding IsSavedPairsVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick" >
+                            <i:InvokeCommandAction Command="{Binding OpenMapPairCommand}"></i:InvokeCommandAction>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type mapperModels:MapPair}">
+                            <TextBlock Padding="5, 10">
+                                <Run Text="{Binding SourceModel.Name}"></Run>
+                                <Run Text=" - "></Run>
+                                <Run Text="{Binding DestinationModel.Name}"></Run>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <ToggleButton IsChecked="{Binding IsSavedPairsVisible, Mode=TwoWay}"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Top"
+                              Padding="5"
+                              Margin="10, 15, -5, 0"
+                              FontFamily="Segoe MDL2 Assets">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSavedPairsVisible}" Value="True">
+                                    <Setter Property="Content" Value="&#xE76C;"/>
+                                    <Setter Property="Grid.Column" Value="0"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsSavedPairsVisible}" Value="False">
+                                    <Setter Property="Content" Value="&#xE76B;"/>
+                                    <Setter Property="Grid.Column" Value="1"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+            </Grid>
+        </Grid>
+        <Border Grid.Row="2"
+                Grid.Column="1"
+                BorderThickness="0, 2, 0, 0"
+                BorderBrush="DarkGray">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+
+                <Button Margin="10"
+                        Content="Create Map Config"
+                        Padding="15"
+                        Command="{Binding CreateMapConfigCommand}"/>
+
+                <Button Margin="10"
+                        Content="Save pair"
+                        Padding="15"
+                        Command="{Binding SaveMapPairCommand}"/>
+
+                <Button Margin="10"
+                        Content="Add ordered"
+                        Padding="15"
+                        Command="{Binding AddOrderedMapPairItemCommand}"/>
+
+                <Button Margin="10"
+                        Content="Add ignore"
+                        Padding="15"
+                        Command="{Binding AddIgnoreMapPairItemCommand}"/>
+
+                <Button Margin="10"
+                        Content="Add"
+                        Padding="15"
+                        Command="{Binding AddMapConfigItemCommand}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</views:MvxWpfView>

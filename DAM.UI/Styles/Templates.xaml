@@ -1,0 +1,195 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mapPairItemModels="clr-namespace:DAM.Core.Models.MapperModels.MapPairItems;assembly=DAM.Core">
+
+    <DataTemplate x:Key="SimpleMapPairItemDataTemplate" DataType="{x:Type mapPairItemModels:SimpleMapPairItem}">
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox
+                Grid.Column="0"
+                SelectedItem="{Binding SourceProperty, Mode=TwoWay}">
+                <ComboBox.Style>
+                    <Style TargetType="ComboBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsReverse}" Value="True">
+                                <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type ListView}}, Path=DataContext.DestinationProperties}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsReverse}" Value="False">
+                                <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type ListView}}, Path=DataContext.SourceProperties}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ComboBox.Style>
+            </ComboBox>
+            <TextBlock 
+                Grid.Column="1"
+                Text="==>" 
+                Margin="5, 10"/>
+            <ComboBox
+                Grid.Column="2"
+                SelectedItem="{Binding DestinationProperty, Mode=TwoWay}">
+                <ComboBox.Style>
+                    <Style TargetType="ComboBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsReverse}" Value="True">
+                                <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type ListView}}, Path=DataContext.SourceProperties}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsReverse}" Value="False">
+                                <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type ListView}}, Path=DataContext.DestinationProperties}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ComboBox.Style>
+            </ComboBox>
+            <CheckBox
+                Grid.Column="3"
+                IsChecked="{Binding IsReverse, Mode=TwoWay}"
+                Content="Reverse"
+                Margin="10, 0, 0, 0"
+                Padding="5"
+                FontSize="16"/>
+
+            <Button 
+                Grid.Column="4"
+                FontFamily="Segoe MDL2 Assets"
+                Content="&#xE74D;"
+                FontSize="16"
+                Padding="5"
+                HorizontalAlignment="Right"
+                Margin="10, 0, 0, 0"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, 
+                            AncestorType={x:Type ListView}}, Path=DataContext.RemoveMapConfigItemCommand}"
+                CommandParameter="{Binding Id}"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="IgnoreMapPairItemDataTemplate" DataType="{x:Type mapPairItemModels:IgnoreMapPairItem}">
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock 
+                Grid.Column="0"
+                Text="Ignore ==>"
+                Margin="0, 10, 5, 10"/>
+            <ComboBox 
+                Grid.Column="1"
+                SelectedItem="{Binding DestinationProperty, Mode=TwoWay}">
+                <ComboBox.Style>
+                    <Style TargetType="ComboBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsReverse}" Value="True">
+                                <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type ListView}}, Path=DataContext.SourceProperties}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsReverse}" Value="False">
+                                <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type ListView}}, Path=DataContext.DestinationProperties}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ComboBox.Style>
+            </ComboBox>
+
+            <CheckBox
+                Grid.Column="2"
+                IsChecked="{Binding IsReverse, Mode=TwoWay}"
+                Content="Reverse"
+                Margin="10, 0, 0, 0"
+                Padding="5"
+                FontSize="16"/>
+
+            <Button 
+                Grid.Column="3"
+                FontFamily="Segoe MDL2 Assets"
+                Content="&#xE74D;"
+                FontSize="16"
+                Padding="5"
+                HorizontalAlignment="Right"
+                Margin="10, 0, 0, 0"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, 
+                            AncestorType={x:Type ListView}}, Path=DataContext.RemoveMapConfigItemCommand}"
+                CommandParameter="{Binding Id}"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="OrderedMapPairItemDataTemplate" DataType="{x:Type mapPairItemModels:OrderedMapPairItem}">
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock 
+                Grid.Column="0"
+                Text="Map "
+                Margin="0, 10"/>
+            <ComboBox 
+                Grid.Column="1"
+                SelectedItem="{Binding DestinationProperty, Mode=TwoWay}">
+                <ComboBox.Style>
+                    <Style TargetType="ComboBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsReverse}" Value="True">
+                                <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type ListView}}, Path=DataContext.SourceProperties}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsReverse}" Value="False">
+                                <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type ListView}}, Path=DataContext.DestinationProperties}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ComboBox.Style>
+            </ComboBox>
+
+            <TextBlock 
+                Grid.Column="2"
+                Text="in order " 
+                Margin="5, 10"/>
+
+            <TextBox 
+                Grid.Column="3"
+                Text="{Binding Order, Mode=TwoWay}"
+                Padding="5"/>
+
+            <CheckBox
+                Grid.Column="4"
+                IsChecked="{Binding IsReverse, Mode=TwoWay}"
+                Content="Reverse"
+                Margin="10, 0, 0, 0"
+                Padding="5"
+                FontSize="16"/>
+
+            <Button
+                Grid.Column="5"
+                FontFamily="Segoe MDL2 Assets"
+                Content="&#xE74D;"
+                FontSize="16"
+                Padding="5"
+                HorizontalAlignment="Right"
+                Margin="10, 0, 0, 0"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, 
+                            AncestorType={x:Type ListView}}, Path=DataContext.RemoveMapConfigItemCommand}"
+                CommandParameter="{Binding Id}"/>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>
